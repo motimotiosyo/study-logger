@@ -71,4 +71,15 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  # セッション設定
+  config.force_ssl = false
+  config.session_store :cookie_store, 
+    key: '_study_timer_session',
+    expire_after: 2.hours,
+    secure: false,
+    httponly: false
+
+  # Devise設定（既にある場合は重複しないように）
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 end
