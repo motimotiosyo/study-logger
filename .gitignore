@@ -1,0 +1,39 @@
+# Ruby / Rails
+/.bundle
+/vendor/bundle
+
+# Environment
+/.env*
+
+# Logs and temp files
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/.keep
+
+# Container-specific
+/myapp/log
+/myapp/tmp
+
+# Assets / builds
+/app/assets/builds/
+/public/assets
+/public/packs
+/public/packs-test
+
+# Node modules
+/node_modules
+/yarn-error.log
+
+# PostgreSQL data (Docker volume)
+/postgresql_data/
+
+# Secrets
+/config/master.key
+
+# OS & editor
+.DS_Store
+.vscode/
+.idea/
