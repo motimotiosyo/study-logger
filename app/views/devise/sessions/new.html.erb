@@ -1,26 +1,58 @@
-<h2>Log in</h2>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100">
+        <span class="text-2xl">⏱️</span>
+      </div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        StudyTimer にログイン
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        学習時間の管理を始めましょう
+      </p>
     </div>
-  <% end %>
+    
+    <%= form_with(model: resource, as: resource_name, url: user_session_path, local: true, class: "mt-8 space-y-6") do |form| %>
+      <input type="hidden" name="remember" value="true">
+      
+      <div class="rounded-md shadow-sm -space-y-px">
+        <div>
+          <%= form.label :email, "メールアドレス", class: "sr-only" %>
+          <%= form.email_field :email, autofocus: true, autocomplete: "email", 
+              placeholder: "メールアドレス",
+              class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" %>
+        </div>
+        
+        <div>
+          <%= form.label :password, "パスワード", class: "sr-only" %>
+          <%= form.password_field :password, autocomplete: "current-password",
+              placeholder: "パスワード",
+              class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" %>
+        </div>
+      </div>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <%= form.check_box :remember_me, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" %>
+          <%= form.label :remember_me, "ログイン状態を保持", class: "ml-2 block text-sm text-gray-900" %>
+        </div>
+
+        <div class="text-sm">
+          <%= link_to "パスワードを忘れた場合", new_password_path(resource_name), 
+              class: "font-medium text-blue-600 hover:text-blue-500" %>
+        </div>
+      </div>
+
+      <div>
+        <%= form.submit "ログイン", 
+            class: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors" %>
+      </div>
+
+      <div class="text-center">
+        <span class="text-sm text-gray-600">アカウントをお持ちでない場合</span>
+        <%= link_to "新規登録", new_registration_path(resource_name), 
+            class: "font-medium text-blue-600 hover:text-blue-500 ml-1" %>
+      </div>
+    <% end %>
   </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

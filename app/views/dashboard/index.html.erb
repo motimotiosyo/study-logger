@@ -1,2 +1,186 @@
-<h1>Dashboard#index</h1>
-<p>Find me in app/views/dashboard/index.html.erb</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">学習ダッシュボード</h1>
+    <p class="mt-2 text-gray-600">今日も頑張って学習しましょう！</p>
+  </div>
+
+  <div class="bg-white shadow rounded-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">現在のセッション</h2>
+    
+    <% if @current_session %>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-lg">
+            <span class="font-medium">状態:</span>
+            <% if @current_session.status == :in_progress %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                ⏰ 学習中
+              </span>
+            <% elsif @current_session.status == :paused %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                ⏸️ 一時停止中
+              </span>
+            <% end %>
+          </p>
+          
+          <p class="text-sm text-gray-600 mt-1">
+            開始時刻: <%= @current_session.started_at.strftime("%H:%M") %>
+          </p>
+          
+          <% if @current_session.status == :paused %>
+            <p class="text-sm text-gray-600">
+              一時停止時間: <%= @current_session.paused_seconds / 60 %>分
+            </p>
+          <% end %>
+        </div>
+        
+        <div class="flex space-x-3">
+          <% if @current_session.status == :in_progress %>
+            <%= link_to "一時停止", pause_session_path(@current_session), 
+                method: :patch,
+                class: "bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md font-medium transition-colors" %>
+          <% elsif @current_session.status == :paused %>
+            <%= link_to "再開", resume_session_path(@current_session), 
+                method: :patch,
+                class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-medium transition-colors" %>
+          <% end %>
+          
+          <%= link_to "終了", finish_session_path(@current_session), 
+              method: :patch,
+              class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium transition-colors",
+              data: { confirm: "セッションを終了しますか？" } %>
+        </div>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <p class="text-gray-500 mb-4">現在、学習セッションは開始されていません。</p>
+        <%= link_to "新しいセッションを開始", new_session_path, 
+            class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium text-lg transition-colors" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white shadow rounded-lg p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-blue-100 rounded-md flex items-center justify-center">
+            <span class="text-blue-600 font-semibold text-sm">今日</span>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">今日の学習時間</p>
+          <p class="text-2xl font-bold text-gray-900"><%= format_duration(@today_seconds) %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center">
+            <span class="text-green-600 font-semibold text-sm">今週</span>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">今週の学習時間</p>
+          <p class="text-2xl font-bold text-gray-900"><%= format_duration(@week_seconds) %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center">
+            <span class="text-purple-600 font-semibold text-sm">今月</span>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">今月の学習時間</p>
+          <p class="text-2xl font-bold text-gray-900"><%= format_duration(@month_seconds) %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center">
+            <span class="text-yellow-600 font-semibold text-sm">累計</span>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">累計学習時間</p>
+          <p class="text-2xl font-bold text-gray-900"><%= format_duration(@total_seconds) %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white shadow rounded-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">目標達成状況</h2>
+    
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-sm font-medium text-gray-700">
+        目標: <%= current_user.target_hours %>時間
+      </span>
+      <span class="text-sm font-medium text-gray-700">
+        <%= @achievement_rate %>% 達成
+      </span>
+    </div>
+    
+    <div class="w-full bg-gray-200 rounded-full h-2.5">
+      <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+           style="width: <%= [@achievement_rate, 100].min %>%"></div>
+    </div>
+    
+    <p class="text-sm text-gray-600 mt-2">
+      現在: <%= sprintf("%.1f", current_user.total_study_hours) %>時間 / 
+      残り: <%= sprintf("%.1f", [current_user.target_hours - current_user.total_study_hours, 0].max) %>時間
+    </p>
+  </div>
+
+  <div class="bg-white shadow rounded-lg p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold text-gray-900">最近のセッション</h2>
+      <%= link_to "すべて見る", sessions_path, class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
+    </div>
+    
+    <% if @recent_sessions.any? %>
+      <div class="space-y-3">
+        <% @recent_sessions.each do |session| %>
+          <div class="flex items-center justify-between py-3 border-b border-gray-200 last:border-b-0">
+            <div>
+              <p class="font-medium text-gray-900">
+                <%= session.started_at.strftime("%m/%d %H:%M") %>
+                <% if session.ended_at %>
+                  - <%= session.ended_at.strftime("%H:%M") %>
+                <% else %>
+                  - 未終了
+                <% end %>
+              </p>
+              <p class="text-sm text-gray-600">
+                学習時間: <%= session.formatted_duration %>
+              </p>
+            </div>
+            
+            <div>
+              <% if session.ended_at %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  完了
+                </span>
+              <% else %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  進行中
+                </span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-gray-500 text-center py-8">まだセッションがありません。最初のセッションを開始しましょう！</p>
+    <% end %>
+  </div>
+</div>

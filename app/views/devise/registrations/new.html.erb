@@ -1,29 +1,84 @@
-<h2>Sign up</h2>
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100">
+        <span class="text-2xl">⏱️</span>
+      </div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        StudyTimer アカウント作成
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        学習時間の記録を始めましょう
+      </p>
+    </div>
+    
+    <%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), local: true, class: "mt-8 space-y-6") do |form| %>
+      <% if resource.errors.any? %>
+        <div class="bg-red-50 border border-red-200 rounded-md p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">入力エラーがあります</h3>
+              <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+                <% resource.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      
+      <div class="space-y-4">
+        <div>
+          <%= form.label :email, "メールアドレス", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.email_field :email, autofocus: true, autocomplete: "email",
+              class: "mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+        </div>
+        
+        <div>
+          <%= form.label :password, "パスワード", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.password_field :password, autocomplete: "new-password",
+              class: "mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          <p class="mt-1 text-sm text-gray-500">6文字以上で入力してください</p>
+        </div>
+        
+        <div>
+          <%= form.label :password_confirmation, "パスワード（確認）", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.password_field :password_confirmation, autocomplete: "new-password",
+              class: "mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+        </div>
+        
+        <div>
+          <%= form.label :target_hours, "目標学習時間（時間）", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1 relative">
+            <%= form.number_field :target_hours, 
+                value: 1000,
+                min: 1, 
+                max: 10000,
+                class: "appearance-none relative block w-full px-3 py-2 pr-12 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <span class="text-gray-500 text-sm">時間</span>
+            </div>
+          </div>
+          <p class="mt-1 text-sm text-gray-500">RUNTEQの推奨学習時間は1000時間です</p>
+        </div>
+      </div>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+      <div>
+        <%= form.submit "アカウント作成", 
+            class: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors" %>
+      </div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+      <div class="text-center">
+        <span class="text-sm text-gray-600">既にアカウントをお持ちの場合</span>
+        <%= link_to "ログイン", new_session_path(resource_name), 
+            class: "font-medium text-blue-600 hover:text-blue-500 ml-1" %>
+      </div>
+    <% end %>
   </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
