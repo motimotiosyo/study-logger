@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   # ユーザープロフィール
   resource :profile, only: [ :show, :edit, :update ]
-  
+
   # 目標時間更新（ダッシュボード用）
   patch "update_target_hours", to: "dashboard#update_target_hours"
 
