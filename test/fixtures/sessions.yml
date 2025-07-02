@@ -2,14 +2,16 @@
 
 one:
   user: one
-  started_at: 2025-07-01 04:01:11
-  ended_at: 2025-07-01 04:01:11
-  paused_seconds: 1
-  paused_at: 2025-07-01 04:01:11
+  started_at: <%= 2.hours.ago %>
+  ended_at: <%= 1.hour.ago %>
+  paused_seconds: 0
+  paused_at: 
+  notes: "テスト用学習セッション1"
 
 two:
-  user: two
-  started_at: 2025-07-01 04:01:11
-  ended_at: 2025-07-01 04:01:11
-  paused_seconds: 1
-  paused_at: 2025-07-01 04:01:11
+  user: one
+  started_at: <%= 3.hours.ago %>
+  ended_at: <%= 2.hours.ago %>
+  paused_seconds: 300
+  paused_at: 
+  notes: "テスト用学習セッション2"
