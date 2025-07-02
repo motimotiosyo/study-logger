@@ -1,4 +1,3 @@
-
 class DashboardController < ApplicationController
   def index
     # @current_session = current_user.current_session ← この行を以下に変更
@@ -17,7 +16,19 @@ class DashboardController < ApplicationController
     @achievement_rate = current_user.achievement_rate
   end
 
+  def update_target_hours
+    if current_user.update(target_hours_params)
+      redirect_to dashboard_path, notice: "目標時間を更新しました"
+    else
+      redirect_to dashboard_path, alert: "目標時間の更新に失敗しました"
+    end
+  end
+
   private
+
+  def target_hours_params
+    params.require(:user).permit(:target_hours)
+  end
 
   # 秒を時間:分形式に変換するヘルパー
   def format_duration(seconds)
