@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get "dashboard", to: "dashboard#index"
 
   # セッション管理
-  resources :sessions, except: [:show] do
+  resources :sessions, except: [ :show ] do
     member do
       patch :start
       patch :pause
@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   end
 
   # ユーザープロフィール
-  resource :profile, only: [:show, :edit, :update]
+  resource :profile, only: [ :show, :edit, :update ]
 
   # ヘルスチェック
   get "up" => "rails/health#show", as: :rails_health_check
