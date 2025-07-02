@@ -1,2 +1,120 @@
-<h1>Sessions#index</h1>
-<p>Find me in app/views/sessions/index.html.erb</p>
+<div class="min-h-screen bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">学習履歴</h1>
+      <p class="text-gray-600">あなたの学習セッション履歴を確認できます</p>
+    </div>
+
+    <!-- 統計サマリー -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">総学習時間</p>
+            <p class="text-2xl font-bold text-gray-900">
+              <%= (@sessions.sum(&:actual_seconds) / 3600).to_i %>時間<%= ((@sessions.sum(&:actual_seconds) % 3600) / 60).to_i %>分
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">総セッション数</p>
+            <p class="text-2xl font-bold text-gray-900"><%= @sessions.count %></p>
+          </div>
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">今週の学習時間</p>
+            <p class="text-2xl font-bold text-gray-900">
+              <%= (current_user.sessions.where(started_at: 1.week.ago..Time.current).sum(&:actual_seconds) / 3600).to_i %>時間
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- セッション一覧 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+      <div class="p-6 border-b border-gray-100">
+        <h2 class="text-xl font-semibold text-gray-900">学習セッション</h2>
+      </div>
+
+      <% if @sessions.any? %>
+        <div class="divide-y divide-gray-100">
+          <% @sessions.each do |session| %>
+            <div class="p-6 hover:bg-gray-50 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-3 mb-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                      <%= case session.status
+                          when :in_progress then 'bg-green-100 text-green-800'
+                          when :paused then 'bg-yellow-100 text-yellow-800'
+                          when :completed then 'bg-blue-100 text-blue-800'
+                          else 'bg-gray-100 text-gray-800'
+                          end %>">
+                      <%= case session.status
+                          when :in_progress then '進行中'
+                          when :paused then '一時停止'
+                          when :completed then '完了'
+                          else '不明'
+                          end %>
+                    </span>
+                    <span class="text-sm text-gray-500">
+                      <%= session.started_at.strftime('%Y年%m月%d日 %H:%M') %>
+                      <% if session.ended_at %>
+                        - <%= session.ended_at.strftime('%H:%M') %>
+                      <% end %>
+                    </span>
+                  </div>
+                  
+                  <div class="flex items-center space-x-4">
+                    <span class="text-lg font-semibold text-gray-900">
+                      <%= session.formatted_duration %>
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                  <%= link_to '編集', edit_session_path(session), 
+                      class: 'inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="p-12 text-center">
+          <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">学習セッションがありません</h3>
+          <p class="text-gray-500 mb-6">まだ学習セッションを開始していません。ダッシュボードから学習を始めましょう。</p>
+          <%= link_to 'ダッシュボードへ', dashboard_path, 
+              class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
