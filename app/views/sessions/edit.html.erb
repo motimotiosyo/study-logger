@@ -1,2 +1,127 @@
-<h1>Sessions#edit</h1>
-<p>Find me in app/views/sessions/edit.html.erb</p>
+<div class="min-h-screen bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+      
+      <!-- ヘッダー -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">セッション編集</h1>
+        <p class="text-gray-600">学習セッションの詳細を編集できます</p>
+      </div>
+
+      <!-- セッション情報カード -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
+        <div class="p-6 border-b border-gray-100">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-900">セッション情報</h2>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= case @session.status
+                  when :in_progress then 'bg-green-100 text-green-800'
+                  when :paused then 'bg-yellow-100 text-yellow-800'
+                  when :completed then 'bg-blue-100 text-blue-800'
+                  else 'bg-gray-100 text-gray-800'
+                  end %>">
+              <%= case @session.status
+                  when :in_progress then '進行中'
+                  when :paused then '一時停止'
+                  when :completed then '完了'
+                  else '不明'
+                  end %>
+            </span>
+          </div>
+        </div>
+        
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">開始時刻</label>
+              <p class="text-sm text-gray-900">
+                <%= @session.started_at ? @session.started_at.strftime('%Y年%m月%d日 %H:%M') : '未設定' %>
+              </p>
+            </div>
+            
+            <% if @session.ended_at %>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">終了時刻</label>
+                <p class="text-sm text-gray-900"><%= @session.ended_at.strftime('%Y年%m月%d日 %H:%M') %></p>
+              </div>
+            <% end %>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">学習時間</label>
+            <p class="text-lg font-semibold text-gray-900"><%= @session.formatted_duration %></p>
+          </div>
+          
+          <% if @session.paused_seconds > 0 %>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">一時停止時間</label>
+              <p class="text-sm text-gray-600"><%= @session.paused_seconds / 60 %>分</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- 編集フォーム -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="p-6 border-b border-gray-100">
+          <h3 class="text-lg font-medium text-gray-900">セッション詳細</h3>
+        </div>
+        
+        <div class="p-6">
+          <%= form_with model: @session, local: true, class: "space-y-6" do |form| %>
+            <% if @session.errors.any? %>
+              <div class="rounded-md bg-red-50 p-4">
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">エラーが発生しました</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                      <ul class="list-disc pl-5 space-y-1">
+                        <% @session.errors.full_messages.each do |message| %>
+                          <li><%= message %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <!-- 学習内容記録 -->
+            <div>
+              <%= form.label :notes, "学習内容・振り返り", class: "block text-sm font-medium text-gray-700 mb-2" %>
+              <%= form.text_area :notes, 
+                  placeholder: "今日学習した内容、気づいたこと、次回の目標などを記録しましょう...", 
+                  rows: 6,
+                  class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              <p class="mt-2 text-sm text-gray-500">学習内容や振り返りを記録することで、より効果的な学習につながります。</p>
+            </div>
+
+            <!-- 操作ボタン -->
+            <div class="flex items-center justify-between pt-6 border-t border-gray-100">
+              <div class="flex space-x-3">
+                <%= link_to 'キャンセル', sessions_path, 
+                    class: 'inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' %>
+              </div>
+              
+              <%= form.submit '更新する', 
+                  class: 'inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' %>
+            </div>
+          <% end %>
+
+          <!-- 削除ボタン（独立したフォーム） -->
+          <div class="mt-4 pt-4 border-t border-gray-200">
+            <%= button_to '削除', session_path(@session), 
+                method: :delete, 
+                data: { confirm: '本当にこのセッションを削除しますか？' },
+                class: 'inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 cursor-pointer' %>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>

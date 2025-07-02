@@ -4,8 +4,9 @@ class Session < ApplicationRecord
   # デフォルト値を設定
   after_initialize :set_defaults, if: :new_record?
   
-  # バリデーションを緩める - started_atは必須だが、createアクションで設定
+  # バリデーション
   validates :paused_seconds, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :notes, length: { maximum: 2000 }
   
   # セッションの状態
   def status

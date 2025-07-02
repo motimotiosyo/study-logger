@@ -22,10 +22,11 @@ class SessionsController < ApplicationController
       return
     end
     
-    @session = current_user.sessions.build(paused_seconds: 0)
+    @session = current_user.sessions.build
+    @session.paused_seconds = 0
+    @session.started_at = Time.current
     
     if @session.save
-      @session.start!
       redirect_to dashboard_path, notice: "学習セッションを開始しました"
     else
       render :new, status: :unprocessable_entity
@@ -91,6 +92,6 @@ class SessionsController < ApplicationController
   end
   
   def session_params
-    params.require(:session).permit(:started_at, :ended_at)
+    params.require(:session).permit(:started_at, :ended_at, :notes)
   end
 end
