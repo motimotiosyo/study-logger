@@ -2,9 +2,9 @@ class Session < ApplicationRecord
   belongs_to :user
   
   # デフォルト値を設定
-  after_initialize :set_defaults
+  after_initialize :set_defaults, if: :new_record?
   
-  # バリデーションを緩める
+  # バリデーションを緩める - started_atは必須だが、createアクションで設定
   validates :paused_seconds, presence: true, numericality: { greater_than_or_equal_to: 0 }
   
   # セッションの状態
@@ -45,7 +45,7 @@ class Session < ApplicationRecord
   
   # セッション開始
   def start!
-    update!(started_at: Time.current)
+    update!(started_at: Time.current) if started_at.nil?
   end
   
   # セッション一時停止
