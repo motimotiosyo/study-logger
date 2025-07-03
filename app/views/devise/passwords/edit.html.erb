@@ -12,7 +12,7 @@
       </p>
     </div>
     
-    <%= form_with(model: resource, as: resource_name, url: password_path(resource_name), local: true, class: "mt-8 space-y-6") do |form| %>
+    <%= form_with(model: resource, as: resource_name, url: password_path(resource_name), local: true, html: { method: :put }, class: "mt-8 space-y-6") do |form| %>
       <% if resource.errors.any? %>
         <div class="bg-red-50 border border-red-200 rounded-md p-4">
           <div class="flex">
