@@ -73,9 +73,11 @@ class User < ApplicationRecord
 
   def create_default_categories
     default_categories = [
-      { name: 'プログラミング', color: '#3B82F6' },
-      { name: '英語学習', color: '#10B981' },
-      { name: 'その他', color: '#6B7280' }
+      { name: 'カリキュラム学習', color: '#3B82F6' },
+      { name: 'プログラミング', color: '#10B981' },
+      { name: 'コーディング', color: '#F59E0B' },
+      { name: '読書', color: '#EF4444' },
+      { name: '動画視聴', color: '#8B5CF6' }
     ]
 
     default_categories.each do |attrs|
