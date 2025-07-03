@@ -84,7 +84,7 @@
     <% if @resource.try(:unconfirmed_email?) %>
       <div class="info-box">
         <p><strong>📝 変更内容</strong></p>
-        <p>メールアドレスを以下に変更する手続きを開始しました：</p>
+        <p>メールアドレスの変更手続きを開始しました：</p>
         <div class="email-display">
           変更前: <%= @email %><br>
           変更後: <%= @resource.unconfirmed_email %> ← 確認待ち
