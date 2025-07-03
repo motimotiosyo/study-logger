@@ -9,6 +9,6 @@ class CreateCategories < ActiveRecord::Migration[7.2]
     end
 
     # ユーザーごとのカテゴリ名は一意にする
-    add_index :categories, [:user_id, :name], unique: true
+    add_index :categories, [ :user_id, :name ], unique: true
   end
 end

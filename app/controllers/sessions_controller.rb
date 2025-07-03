@@ -22,11 +22,11 @@ class SessionsController < ApplicationController
       redirect_to dashboard_path, alert: "既に進行中のセッションがあります"
       return
     end
-  
+
     @session = current_user.sessions.build(session_params)
     @session.paused_seconds = 0
     @session.started_at = Time.current  # この行を追加
-  
+
     if @session.save
       redirect_to dashboard_path, notice: "学習セッションを開始しました"
     else
