@@ -27,6 +27,10 @@ Rails.application.configure do
     protocol: 'https'
   }
   
+  config.action_mailer.default_options = {
+    from: 'study.logger.app@gmail.com'
+  }
+
   # SendGrid SMTP設定（統合版）
   config.action_mailer.smtp_settings = {
     user_name: 'apikey',
