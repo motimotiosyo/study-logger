@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :confirmable  # メール認証機能追加
+         :confirmable
 
   has_many :sessions, dependent: :destroy
   has_many :categories, dependent: :destroy
@@ -12,7 +12,6 @@ class User < ApplicationRecord
 
   # デフォルト目標時間を1000時間に設定
   after_initialize :set_default_target_hours
-  # 🔥 変更：メール認証完了時にカテゴリ作成
   after_update :create_categories_on_confirmation, if: :saved_change_to_confirmed_at?
 
   # 累計学習時間（秒）
@@ -73,13 +72,7 @@ class User < ApplicationRecord
     name.present? ? name : email.split('@').first
   end
 
-  private
-
-  def set_default_target_hours
-    self.target_hours ||= 1000
-  end
-
-  # 🔥 メール認証完了時にデフォルトカテゴリを作成
+  # 🔥 publicメソッドに移動：メール認証完了時にデフォルトカテゴリを作成
   def create_categories_on_confirmation
     return if categories.exists? # 既にカテゴリがある場合はスキップ
 
@@ -96,5 +89,11 @@ class User < ApplicationRecord
     default_categories.each do |attrs|
       categories.create!(attrs)
     end
+  end
+
+  private
+
+  def set_default_target_hours
+    self.target_hours ||= 1000
   end
 end
