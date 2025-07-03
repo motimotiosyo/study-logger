@@ -18,22 +18,34 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :primary } }
 
-  # メール設定（本番環境）
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default_url_options = { 
-    host: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "study-logger-nc1w.onrender.com"),
-    protocol: 'https'
+  # Render用ホスト設定
+  config.action_mailer.default_url_options = {
+    host: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "localhost")
   }
 
+  # SendGrid SMTP設定
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.smtp_settings = {
-    address: 'smtp.gmail.com',
+    user_name: 'apikey',
+    password: ENV['SENDGRID_API_KEY'],
+    domain: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "localhost"),
+    address: 'smtp.sendgrid.net',
     port: 587,
-    domain: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "study-logger-nc1w.onrender.com"),
-    user_name: ENV['SMTP_USERNAME'],
-    password: ENV['SMTP_PASSWORD'],
-    authentication: 'plain',
+    authentication: :plain,
+    enable_starttls_auto: true
+  }
+
+  # SendGrid SMTP設定
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.smtp_settings = {
+    user_name: 'apikey',
+    password: ENV['SENDGRID_API_KEY'],
+    domain: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "localhost"),
+    address: 'smtp.sendgrid.net',
+    port: 587,
+    authentication: :plain,
     enable_starttls_auto: true
   }
 
