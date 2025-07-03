@@ -1,8 +1,9 @@
 class SessionsController < ApplicationController
   before_action :set_session, only: [ :edit, :update, :destroy, :start, :pause, :resume, :finish ]
+  before_action :set_categories, only: [ :new, :create, :edit, :update ]
 
   def index
-    @sessions = current_user.sessions.order(started_at: :desc)
+    @sessions = current_user.sessions.includes(:category).order(started_at: :desc)
   end
 
   def new
@@ -22,7 +23,8 @@ class SessionsController < ApplicationController
       return
     end
 
-    @session = current_user.sessions.build(paused_seconds: 0)
+    @session = current_user.sessions.build(session_params)
+    @session.paused_seconds = 0
 
     if @session.save
       redirect_to dashboard_path, notice: "学習セッションを開始しました"
@@ -89,7 +91,11 @@ class SessionsController < ApplicationController
     @session = current_user.sessions.find(params[:id])
   end
 
+  def set_categories
+    @categories = current_user.categories.order(:name)
+  end
+
   def session_params
-    params.require(:session).permit(:started_at, :ended_at, :notes)
+    params.require(:session).permit(:started_at, :ended_at, :notes, :category_id)
   end
 end
