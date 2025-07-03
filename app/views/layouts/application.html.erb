@@ -44,7 +44,7 @@
             
             <!-- ユーザーメニュー -->
             <div class="flex items-center space-x-4">
-              <span class="text-sm">こんにちは、<%= current_user.email.split('@').first %>さん</span>
+              <span class="text-sm">こんにちは、<%= current_user.display_name %>さん</span>
               <%= button_to "ログアウト", destroy_user_session_path, 
                   method: :delete,
                   class: "bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white border-0 cursor-pointer",

@@ -9,7 +9,8 @@ class ApplicationController < ActionController::Base
   private
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [ :target_hours ])
-    devise_parameter_sanitizer.permit(:account_update, keys: [ :target_hours ])
+    # 新規登録とアカウント更新でnameを許可
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name, :target_hours ])
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :name, :target_hours ])
   end
 end

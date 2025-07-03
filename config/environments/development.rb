@@ -32,7 +32,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # メール設定（開発環境）
-  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.delivery_method = :test
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
