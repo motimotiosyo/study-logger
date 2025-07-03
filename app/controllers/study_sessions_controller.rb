@@ -1,4 +1,4 @@
-class SessionsController < ApplicationController
+class StudySessionsController < ApplicationController
   before_action :set_session, only: [ :edit, :update, :destroy, :start, :pause, :resume, :finish ]
   before_action :set_categories, only: [ :new, :create, :edit, :update ]
 
@@ -39,7 +39,7 @@ class SessionsController < ApplicationController
 
   def update
     if @session.update(session_params)
-      redirect_to sessions_path, notice: "セッションを更新しました"
+      redirect_to study_sessions_path, notice: "セッションを更新しました"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -47,7 +47,7 @@ class SessionsController < ApplicationController
 
   def destroy
     @session.destroy
-    redirect_to sessions_path, notice: "セッションを削除しました"
+    redirect_to study_sessions_path, notice: "セッションを削除しました"
   end
 
   # セッション開始（既存セッションの再開始用）

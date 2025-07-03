@@ -47,16 +47,16 @@
         
         <div class="flex space-x-3">
           <% if @current_session.status == :in_progress %>
-            <%= button_to "一時停止", pause_session_path(@current_session), 
+            <%= button_to "一時停止", pause_study_session_path(@current_session), 
                 method: :patch,
                 class: "bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md font-medium transition-colors border-0 cursor-pointer" %>
           <% elsif @current_session.status == :paused %>
-            <%= button_to "再開", resume_session_path(@current_session), 
+            <%= button_to "再開", resume_study_session_path(@current_session), 
                 method: :patch,
                 class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-medium transition-colors border-0 cursor-pointer" %>
           <% end %>
           
-          <%= button_to "終了", finish_session_path(@current_session), 
+          <%= button_to "終了", finish_study_session_path(@current_session), 
               method: :patch,
               class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium transition-colors border-0 cursor-pointer",
               data: { confirm: "セッションを終了しますか？" } %>
@@ -65,7 +65,7 @@
     <% else %>
       <div class="text-center py-8">
         <p class="text-gray-500 mb-4">現在、学習セッションは開始されていません。</p>
-        <%= link_to "新しいセッションを開始", new_session_path, 
+        <%= link_to "新しいセッションを開始", new_study_session_path, 
             class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium text-lg transition-colors" %>
       </div>
     <% end %>
@@ -133,7 +133,7 @@
   <div class="bg-white shadow rounded-lg p-6 mb-8">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-semibold text-gray-900">カテゴリ別学習時間</h2>
-      <%= link_to "詳細を見る", sessions_path, class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
+      <%= link_to "詳細を見る", study_sessions_path, class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
     </div>
     
     <% if current_user.category_stats.any? %>
@@ -197,7 +197,7 @@
   <div class="bg-white shadow rounded-lg p-6">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-semibold text-gray-900">最近のセッション</h2>
-      <%= link_to "すべて見る", sessions_path, class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
+      <%= link_to "すべて見る", study_sessions_path, class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
     </div>
     
     <% if @recent_sessions.any? %>
