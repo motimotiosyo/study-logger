@@ -7,7 +7,7 @@ class User < ApplicationRecord
   has_many :categories, dependent: :destroy
 
   # バリデーション
-  validates :name, presence: true, length: { minimum: 2, maximum: 50 }
+  validates :name, presence: true, length: { minimum: 1, maximum: 50 }
   validates :target_hours, numericality: { greater_than: 0 }, allow_nil: true
 
   # デフォルト目標時間を1000時間に設定

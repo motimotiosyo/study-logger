@@ -16,12 +16,13 @@ class AddEmailConfirmationToUsers < ActiveRecord::Migration[7.2]
     reversible do |dir|
       dir.up do
         # 既存ユーザーのnameにemailのローカル部分を設定
-        execute <<-SQL
-          UPDATE users 
-          SET confirmed_at = NOW(), 
-              name = SPLIT_PART(email, '@', 1)
-          WHERE confirmed_at IS NULL;
-        SQL
+        User.reset_column_information
+        User.find_each do |user|
+          user.update_columns(
+            confirmed_at: Time.current,
+            name: user.email.split('@').first
+          )
+        end
       end
     end
   end
