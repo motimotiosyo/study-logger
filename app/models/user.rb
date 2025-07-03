@@ -1,11 +1,13 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         :confirmable  # メール認証機能追加
 
   has_many :sessions, dependent: :destroy
   has_many :categories, dependent: :destroy
 
-  # バリデーションを緩める（一時的）
+  # バリデーション
+  validates :name, presence: true, length: { minimum: 1, maximum: 50 }
   validates :target_hours, numericality: { greater_than: 0 }, allow_nil: true
 
   # デフォルト目標時間を1000時間に設定
@@ -63,6 +65,11 @@ class User < ApplicationRecord
         this_week_seconds: category.this_week_seconds
       }
     end.sort_by { |stat| -stat[:total_seconds] }
+  end
+
+  # 表示用名前（メール認証後はname、未認証時はemail）
+  def display_name
+    name.present? ? name : email.split('@').first
   end
 
   private
