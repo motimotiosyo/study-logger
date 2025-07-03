@@ -3,12 +3,14 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :sessions, dependent: :destroy
+  has_many :categories, dependent: :destroy
 
   # バリデーションを緩める（一時的）
   validates :target_hours, numericality: { greater_than: 0 }, allow_nil: true
 
   # デフォルト目標時間を1000時間に設定
   after_initialize :set_default_target_hours
+  after_create :create_default_categories
 
   # 累計学習時間（秒）
   def total_study_seconds
@@ -52,9 +54,32 @@ class User < ApplicationRecord
     current_session.present?
   end
 
+  # カテゴリ別学習時間統計
+  def category_stats
+    categories.includes(:sessions).map do |category|
+      {
+        category: category,
+        total_seconds: category.total_study_seconds,
+        this_week_seconds: category.this_week_seconds
+      }
+    end.sort_by { |stat| -stat[:total_seconds] }
+  end
+
   private
 
   def set_default_target_hours
     self.target_hours ||= 1000
+  end
+
+  def create_default_categories
+    default_categories = [
+      { name: 'プログラミング', color: '#3B82F6' },
+      { name: '英語学習', color: '#10B981' },
+      { name: 'その他', color: '#6B7280' }
+    ]
+
+    default_categories.each do |attrs|
+      categories.create!(attrs)
+    end
   end
 end

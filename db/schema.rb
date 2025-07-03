@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_02_032325) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_03_030702) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "color", default: "#3B82F6"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_categories_on_user_id_and_name", unique: true
+    t.index ["user_id"], name: "index_categories_on_user_id"
+  end
 
   create_table "sessions", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -23,6 +33,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_02_032325) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "notes"
+    t.bigint "category_id"
+    t.index ["category_id"], name: "index_sessions_on_category_id"
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
@@ -39,5 +51,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_02_032325) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "categories", "users"
+  add_foreign_key "sessions", "categories"
   add_foreign_key "sessions", "users"
 end
