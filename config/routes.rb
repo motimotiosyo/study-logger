@@ -1,4 +1,3 @@
-
 Rails.application.routes.draw do
   devise_for :users
 
@@ -8,8 +7,8 @@ Rails.application.routes.draw do
   # ダッシュボード
   get "dashboard", to: "dashboard#index"
 
-  # セッション管理
-  resources :sessions, except: [ :show ] do
+  # 学習セッション管理（study_sessionsに変更）
+  resources :study_sessions, except: [ :show ] do
     member do
       patch :start
       patch :pause
