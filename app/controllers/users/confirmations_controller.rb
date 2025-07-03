@@ -7,7 +7,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     if resource.errors.empty?
       # 🔥 認証成功後にデフォルトカテゴリを作成
       resource.create_categories_on_confirmation
-      
+
       set_flash_message!(:notice, :confirmed)
       respond_with_navigational(resource) { redirect_to after_confirmation_path_for(resource_name, resource) }
     else

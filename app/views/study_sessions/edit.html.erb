@@ -4,15 +4,15 @@
       
       <!-- ヘッダー -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">セッション編集</h1>
-        <p class="text-gray-600">学習セッションの詳細を編集できます</p>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">学習セッション編集</h1>
+        <p class="text-gray-600">学習セッションの詳細を編集できます。</p>
       </div>
 
       <!-- セッション情報カード -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
         <div class="p-6 border-b border-gray-100">
           <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-900">セッション情報</h2>
+            <h2 class="text-xl font-semibold text-gray-900">学習セッション情報</h2>
             <div class="flex items-center space-x-2">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= case @session.status
                     when :in_progress then 'bg-green-100 text-green-800'
@@ -71,11 +71,11 @@
       <!-- 編集フォーム -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100">
         <div class="p-6 border-b border-gray-100">
-          <h3 class="text-lg font-medium text-gray-900">セッション詳細</h3>
+          <h3 class="text-lg font-medium text-gray-900">学習セッション詳細</h3>
         </div>
         
         <div class="p-6">
-          <%= form_with model: @session, local: true, class: "space-y-6" do |form| %>
+          <%= form_with url: study_session_path(@session), method: :patch, scope: :session, local: true, class: "space-y-6" do |form| %>
             <% if @session.errors.any? %>
               <div class="rounded-md bg-red-50 p-4">
                 <div class="flex">
@@ -129,7 +129,7 @@
             <!-- 操作ボタン -->
             <div class="flex items-center justify-between pt-6 border-t border-gray-100">
               <div class="flex space-x-3">
-                <%= link_to 'キャンセル', sessions_path, 
+                <%= link_to 'キャンセル', study_sessions_path, 
                     class: 'inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' %>
               </div>
               
@@ -140,9 +140,9 @@
 
           <!-- 削除ボタン（独立したフォーム） -->
           <div class="mt-4 pt-4 border-t border-gray-200">
-            <%= button_to '削除', session_path(@session), 
+            <%= button_to '削除', study_session_path(@session), 
                 method: :delete, 
-                data: { confirm: '本当にこのセッションを削除しますか？' },
+                data: { confirm: '本当にこの学習セッションを削除してもよろしいですか？' },
                 class: 'inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 cursor-pointer' %>
           </div>
         </div>
