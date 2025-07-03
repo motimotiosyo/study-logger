@@ -18,35 +18,26 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :primary } }
 
-  # Render用ホスト設定
+  # メール設定
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true  # エラーを明確に表示
   config.action_mailer.default_url_options = {
-    host: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "localhost")
+    host: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "study-logger-nc1w.onrender.com"),
+    protocol: 'https'
   }
-
-  # SendGrid SMTP設定
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
+  
+  # SendGrid SMTP設定（統合版）
   config.action_mailer.smtp_settings = {
     user_name: 'apikey',
     password: ENV['SENDGRID_API_KEY'],
-    domain: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "localhost"),
+    domain: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "study-logger-nc1w.onrender.com"),
     address: 'smtp.sendgrid.net',
     port: 587,
     authentication: :plain,
-    enable_starttls_auto: true
-  }
-
-  # SendGrid SMTP設定
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.smtp_settings = {
-    user_name: 'apikey',
-    password: ENV['SENDGRID_API_KEY'],
-    domain: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "localhost"),
-    address: 'smtp.sendgrid.net',
-    port: 587,
-    authentication: :plain,
-    enable_starttls_auto: true
+    enable_starttls_auto: true,
+    open_timeout: 10,
+    read_timeout: 10
   }
 
   config.i18n.fallbacks = true
