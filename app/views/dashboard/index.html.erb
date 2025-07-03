@@ -35,7 +35,7 @@
           </div>
           
           <p class="text-sm text-gray-600 mt-1">
-            開始時刻: <%= @current_session.started_at.strftime("%H:%M") %>
+            開始時刻: <%= @current_session.started_at&.strftime("%H:%M") || "未設定" %>
           </p>
           
           <% if @current_session.status == :paused %>
@@ -207,7 +207,7 @@
             <div>
               <div class="flex items-center space-x-2 mb-1">
                 <p class="font-medium text-gray-900">
-                  <%= session.started_at.strftime("%m/%d %H:%M") %>
+                  <%= session.started_at&.strftime("%m/%d %H:%M") || "未設定" %>
                   <% if session.ended_at %>
                     - <%= session.ended_at.strftime("%H:%M") %>
                   <% else %>
