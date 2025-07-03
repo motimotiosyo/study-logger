@@ -12,7 +12,8 @@ class User < ApplicationRecord
 
   # デフォルト目標時間を1000時間に設定
   after_initialize :set_default_target_hours
-  after_create :create_default_categories
+  # 🔥 変更：メール認証完了時にカテゴリ作成
+  after_update :create_categories_on_confirmation, if: :saved_change_to_confirmed_at?
 
   # 累計学習時間（秒）
   def total_study_seconds
@@ -78,7 +79,10 @@ class User < ApplicationRecord
     self.target_hours ||= 1000
   end
 
-  def create_default_categories
+  # 🔥 メール認証完了時にデフォルトカテゴリを作成
+  def create_categories_on_confirmation
+    return if categories.exists? # 既にカテゴリがある場合はスキップ
+
     default_categories = [
       { name: "カリキュラム学習", color: "#3B82F6" },
       { name: "プログラミング", color: "#10B981" },
