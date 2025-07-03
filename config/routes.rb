@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
+  # 🔥 カスタムregistrationsコントローラーを追加
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
 
   # ルートをダッシュボードに設定
   root "dashboard#index"

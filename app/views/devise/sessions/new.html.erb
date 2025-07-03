@@ -11,6 +11,30 @@
         学習時間の管理を始めましょう
       </p>
     </div>
+
+    <!-- 🔥 メール確認が必要な場合の案内 -->
+    <% if alert&.include?("メールアドレスの確認") %>
+      <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-blue-800">メール認証が必要です</h3>
+            <div class="mt-2 text-sm text-blue-700">
+              <p>学習loggerをご利用いただくには、メールアドレスの確認が必要です。</p>
+              <p class="mt-1">確認メール内のリンクをクリックしてください。</p>
+            </div>
+            <div class="mt-3">
+              <%= link_to "確認メールを再送信する", new_user_confirmation_path, 
+                  class: "inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
     
     <%= form_with(model: resource, as: resource_name, url: user_session_path, local: true, class: "mt-8 space-y-6") do |form| %>
       <input type="hidden" name="remember" value="true">
@@ -54,5 +78,15 @@
             class: "font-medium text-blue-600 hover:text-blue-500 ml-1" %>
       </div>
     <% end %>
+
+    <!-- 🔥 メール確認のヘルプ情報 -->
+    <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+      <h3 class="text-sm font-medium text-gray-900 mb-2">📧 メールが届かない場合</h3>
+      <ul class="text-sm text-gray-600 space-y-1">
+        <li>• 迷惑メールフォルダをご確認ください</li>
+        <li>• 送信元: study.logger.app@gmail.com</li>
+        <li>• 確認URLの有効期限は3日間です</li>
+      </ul>
+    </div>
   </div>
 </div>
