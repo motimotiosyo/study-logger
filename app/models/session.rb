@@ -1,5 +1,6 @@
 class Session < ApplicationRecord
   belongs_to :user
+  belongs_to :category, optional: true
 
   # デフォルト値を設定
   after_initialize :set_defaults, if: :new_record?
@@ -41,6 +42,11 @@ class Session < ApplicationRecord
     hours = total_minutes / 60
     minutes = total_minutes % 60
     "#{hours}時間#{minutes}分"
+  end
+
+  # カテゴリ名を表示（カテゴリがない場合は「未分類」）
+  def category_name
+    category&.name || '未分類'
   end
 
   # セッション開始

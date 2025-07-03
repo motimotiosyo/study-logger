@@ -13,19 +13,27 @@
         <div class="p-6 border-b border-gray-100">
           <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-900">セッション情報</h2>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= case @session.status
-                  when :in_progress then 'bg-green-100 text-green-800'
-                  when :paused then 'bg-yellow-100 text-yellow-800'
-                  when :completed then 'bg-blue-100 text-blue-800'
-                  else 'bg-gray-100 text-gray-800'
-                  end %>">
-              <%= case @session.status
-                  when :in_progress then '進行中'
-                  when :paused then '一時停止'
-                  when :completed then '完了'
-                  else '不明'
-                  end %>
-            </span>
+            <div class="flex items-center space-x-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= case @session.status
+                    when :in_progress then 'bg-green-100 text-green-800'
+                    when :paused then 'bg-yellow-100 text-yellow-800'
+                    when :completed then 'bg-blue-100 text-blue-800'
+                    else 'bg-gray-100 text-gray-800'
+                    end %>">
+                <%= case @session.status
+                    when :in_progress then '進行中'
+                    when :paused then '一時停止'
+                    when :completed then '完了'
+                    else '不明'
+                    end %>
+              </span>
+              <% if @session.category %>
+                <div class="flex items-center space-x-1">
+                  <div class="w-3 h-3 rounded-full" style="background-color: <%= @session.category.color %>"></div>
+                  <span class="text-xs text-gray-600"><%= @session.category.name %></span>
+                </div>
+              <% end %>
+            </div>
           </div>
         </div>
         
@@ -90,6 +98,24 @@
               </div>
             <% end %>
 
+            <!-- カテゴリ選択 -->
+            <div>
+              <%= form.label :category_id, "学習カテゴリ", class: "block text-sm font-medium text-gray-700 mb-2" %>
+              <%= form.select :category_id, 
+                  options_from_collection_for_select(@categories, :id, :name, @session.category_id),
+                  { include_blank: "カテゴリなし" },
+                  { class: "block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" } %>
+              <p class="mt-1 text-sm text-gray-500">学習内容に応じてカテゴリを変更できます</p>
+            </div>
+
+            <!-- カテゴリプレビュー -->
+            <div id="category-preview" class="<%= 'hidden' unless @session.category %>">
+              <div class="flex items-center space-x-2">
+                <div id="category-color" class="w-4 h-4 rounded-full border border-gray-300" style="background-color: <%= @session.category&.color %>"></div>
+                <span id="category-name" class="text-sm text-gray-600"><%= @session.category&.name %></span>
+              </div>
+            </div>
+
             <!-- 学習内容記録 -->
             <div>
               <%= form.label :notes, "学習内容・振り返り", class: "block text-sm font-medium text-gray-700 mb-2" %>
@@ -125,3 +151,31 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const categorySelect = document.getElementById('session_category_id');
+  const categoryPreview = document.getElementById('category-preview');
+  const categoryColor = document.getElementById('category-color');
+  const categoryName = document.getElementById('category-name');
+  
+  // カテゴリ情報（色情報）
+  const categories = {
+    <% @categories.each do |category| %>
+      '<%= category.id %>': { name: '<%= category.name %>', color: '<%= category.color %>' },
+    <% end %>
+  };
+  
+  categorySelect.addEventListener('change', function() {
+    const selectedId = this.value;
+    if (selectedId && categories[selectedId]) {
+      const category = categories[selectedId];
+      categoryColor.style.backgroundColor = category.color;
+      categoryName.textContent = category.name;
+      categoryPreview.classList.remove('hidden');
+    } else {
+      categoryPreview.classList.add('hidden');
+    }
+  });
+});
+</script>

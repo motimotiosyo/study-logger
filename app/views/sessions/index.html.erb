@@ -81,6 +81,16 @@
                           else '不明'
                           end %>
                     </span>
+                    
+                    <% if session.category %>
+                      <div class="flex items-center space-x-1">
+                        <div class="w-3 h-3 rounded-full" style="background-color: <%= session.category.color %>"></div>
+                        <span class="text-xs text-gray-600"><%= session.category.name %></span>
+                      </div>
+                    <% else %>
+                      <span class="text-xs text-gray-400">未分類</span>
+                    <% end %>
+                    
                     <span class="text-sm text-gray-500">
                       <%= session.started_at.strftime('%Y年%m月%d日 %H:%M') %>
                       <% if session.ended_at %>
@@ -93,6 +103,11 @@
                     <span class="text-lg font-semibold text-gray-900">
                       <%= session.formatted_duration %>
                     </span>
+                    <% if session.notes.present? %>
+                      <span class="text-sm text-gray-500">
+                        <%= truncate(session.notes, length: 50) %>
+                      </span>
+                    <% end %>
                   </div>
                 </div>
                 
