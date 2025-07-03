@@ -77,6 +77,13 @@
         <%= link_to "新規登録", new_registration_path(resource_name), 
             class: "font-medium text-blue-600 hover:text-blue-500 ml-1" %>
       </div>
+
+      <!-- 🔥 確認メール再送信リンクを常時表示 -->
+      <div class="text-center">
+        <div class="text-sm text-gray-500 mb-2">メールアドレスの確認がお済みでない場合</div>
+        <%= link_to "確認メールを再送信する", new_user_confirmation_path, 
+            class: "font-medium text-indigo-600 hover:text-indigo-500" %>
+      </div>
     <% end %>
 
     <!-- 🔥 メール確認のヘルプ情報 -->
