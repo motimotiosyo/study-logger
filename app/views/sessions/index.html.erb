@@ -92,7 +92,7 @@
                     <% end %>
                     
                     <span class="text-sm text-gray-500">
-                      <%= session.started_at.strftime('%Y年%m月%d日 %H:%M') %>
+                      <%= session.started_at&.strftime('%Y年%m月%d日 %H:%M') || '未設定' %>
                       <% if session.ended_at %>
                         - <%= session.ended_at.strftime('%H:%M') %>
                       <% end %>

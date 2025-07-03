@@ -5,21 +5,59 @@
       <p class="text-gray-600">今日も学習を頑張りましょう！</p>
     </div>
 
-    <div class="text-center">
-      <div class="mb-8">
-        <div class="inline-flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full mb-4">
-          <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
+    <%= form_with model: @session, local: true, class: "space-y-6" do |form| %>
+      <% if @session.errors.any? %>
+        <div class="bg-red-50 border border-red-200 rounded-md p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">入力エラーがあります</h3>
+              <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+                <% @session.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
         </div>
-        <p class="text-lg text-gray-700 mb-2">学習セッションを開始する準備はできていますか？</p>
-        <p class="text-sm text-gray-500">
-          セッション中は一時停止・再開が可能です。<br>
-          集中して学習に取り組みましょう！
-        </p>
+      <% end %>
+
+      <!-- カテゴリ選択 -->
+      <div>
+        <%= form.label :category_id, "学習カテゴリ", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :category_id, 
+            options_from_collection_for_select(@categories, :id, :name, @session.category_id),
+            { include_blank: "カテゴリを選択してください" },
+            { class: "block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" } %>
+        <p class="mt-1 text-sm text-gray-500">学習内容に応じてカテゴリを選択してください</p>
       </div>
 
-      <%= form_with model: @session, local: true, class: "space-y-4" do |form| %>
+      <!-- カテゴリプレビュー -->
+      <div id="category-preview" class="hidden">
+        <div class="flex items-center space-x-2">
+          <div id="category-color" class="w-4 h-4 rounded-full border border-gray-300"></div>
+          <span id="category-name" class="text-sm text-gray-600"></span>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <div class="mb-6">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-4">
+            <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <p class="text-lg text-gray-700 mb-2">学習セッションを開始する準備はできていますか？</p>
+          <p class="text-sm text-gray-500">
+            セッション中は一時停止・再開が可能です。<br>
+            集中して学習に取り組みましょう！
+          </p>
+        </div>
+
         <div class="flex justify-center space-x-4">
           <%= link_to "キャンセル", dashboard_path, 
               class: "px-6 py-3 border border-gray-300 rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors" %>
@@ -27,8 +65,8 @@
           <%= form.submit "学習を開始する", 
               class: "px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm font-medium text-lg transition-colors cursor-pointer" %>
         </div>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
 
     <!-- 学習のコツ -->
     <div class="mt-8 p-4 bg-blue-50 rounded-lg">
@@ -41,3 +79,31 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const categorySelect = document.getElementById('session_category_id');
+  const categoryPreview = document.getElementById('category-preview');
+  const categoryColor = document.getElementById('category-color');
+  const categoryName = document.getElementById('category-name');
+  
+  // カテゴリ情報（色情報）
+  const categories = {
+    <% @categories.each do |category| %>
+      '<%= category.id %>': { name: '<%= category.name %>', color: '<%= category.color %>' },
+    <% end %>
+  };
+  
+  categorySelect.addEventListener('change', function() {
+    const selectedId = this.value;
+    if (selectedId && categories[selectedId]) {
+      const category = categories[selectedId];
+      categoryColor.style.backgroundColor = category.color;
+      categoryName.textContent = category.name;
+      categoryPreview.classList.remove('hidden');
+    } else {
+      categoryPreview.classList.add('hidden');
+    }
+  });
+});
+</script>
