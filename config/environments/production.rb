@@ -24,19 +24,19 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true  # エラーを明確に表示
   config.action_mailer.default_url_options = {
     host: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "study-logger-nc1w.onrender.com"),
-    protocol: 'https'
+    protocol: "https"
   }
-  
+
   config.action_mailer.default_options = {
-    from: 'study.logger.app@gmail.com'
+    from: "study.logger.app@gmail.com"
   }
 
   # SendGrid SMTP設定（統合版）
   config.action_mailer.smtp_settings = {
-    user_name: 'apikey',
-    password: ENV['SENDGRID_API_KEY'],
+    user_name: "apikey",
+    password: ENV["SENDGRID_API_KEY"],
     domain: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "study-logger-nc1w.onrender.com"),
-    address: 'smtp.sendgrid.net',
+    address: "smtp.sendgrid.net",
     port: 587,
     authentication: :plain,
     enable_starttls_auto: true,

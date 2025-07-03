@@ -69,7 +69,7 @@ class User < ApplicationRecord
 
   # 表示用名前（メール認証後はname、未認証時はemail）
   def display_name
-    name.present? ? name : email.split('@').first
+    name.present? ? name : email.split("@").first
   end
 
   # 🔥 publicメソッドに移動：メール認証完了時にデフォルトカテゴリを作成
