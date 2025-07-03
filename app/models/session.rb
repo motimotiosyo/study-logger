@@ -46,7 +46,7 @@ class Session < ApplicationRecord
 
   # カテゴリ名を表示（カテゴリがない場合は「未分類」）
   def category_name
-    category&.name || '未分類'
+    category&.name || "未分類"
   end
 
   # セッション開始
