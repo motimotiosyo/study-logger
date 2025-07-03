@@ -1,7 +1,128 @@
-<p>Hello <%= @email %>!</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>学習logger - メールアドレス変更通知</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f8fafc;
+    }
+    .container {
+      background: white;
+      border-radius: 8px;
+      padding: 32px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .logo {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 32px;
+    }
+    .info-box {
+      background-color: #dbeafe;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 24px 0;
+    }
+    .warning-box {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 24px 0;
+    }
+    .footer {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .email-display {
+      background-color: #f3f4f6;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">📧</div>
+      <h1 class="title">学習logger</h1>
+      <p class="subtitle">メールアドレス変更通知</p>
+    </div>
 
-<% if @resource.try(:unconfirmed_email?) %>
-  <p>We're contacting you to notify you that your email is being changed to <%= @resource.unconfirmed_email %>.</p>
-<% else %>
-  <p>We're contacting you to notify you that your email has been changed to <%= @resource.email %>.</p>
-<% end %>
+    <p>こんにちは、<strong><%= @resource.name || @email.split('@').first %>さん</strong></p>
+
+    <p>学習loggerアカウントのメールアドレスが変更されましたので、お知らせします。</p>
+
+    <% if @resource.try(:unconfirmed_email?) %>
+      <div class="info-box">
+        <p><strong>📝 変更内容</strong></p>
+        <p>メールアドレスを以下に変更する手続きを開始しました：</p>
+        <div class="email-display">
+          変更前: <%= @email %><br>
+          変更後: <%= @resource.unconfirmed_email %> ← 確認待ち
+        </div>
+        <p><strong>新しいメールアドレスに確認メールをお送りしました。</strong>メール内のリンクをクリックして変更を完了してください。</p>
+      </div>
+    <% else %>
+      <div class="info-box">
+        <p><strong>✅ 変更完了</strong></p>
+        <p>メールアドレスが正常に変更されました：</p>
+        <div class="email-display">
+          新しいメールアドレス: <%= @resource.email %>
+        </div>
+        <p>今後は新しいメールアドレスでログインしてください。</p>
+      </div>
+    <% end %>
+
+    <div class="warning-box">
+      <p><strong>🔒 セキュリティについて</strong></p>
+      <ul>
+        <li>この変更に心当たりがない場合は、直ちにサポートまでご連絡ください</li>
+        <li>不正アクセスを防ぐため、パスワードの変更もご検討ください</li>
+        <li>ログイン情報は第三者に教えないでください</li>
+      </ul>
+    </div>
+
+    <p><strong>📞 お困りの場合</strong></p>
+    <p>このメール変更に心当たりがない場合や、ご不明な点がございましたら、お気軽にお問い合わせください。アカウントのセキュリティを最優先に対応いたします。</p>
+
+    <div class="footer">
+      <p>学習loggerチーム<br>
+      <a href="https://study-logger-nc1w.onrender.com" style="color: #3b82f6;">https://study-logger-nc1w.onrender.com</a></p>
+      
+      <p style="margin-top: 16px; font-size: 12px; color: #9ca3af;">
+        ※ このメールは送信専用です。返信いただいてもお答えできません。<br>
+        ※ セキュリティ上の理由により、このメールは自動送信されています。
+      </p>
+    </div>
+  </div>
+</body>
+</html>
