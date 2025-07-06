@@ -289,34 +289,15 @@ function setupSessionModal() {
 document.addEventListener('DOMContentLoaded', setupSessionModal);
 document.addEventListener('turbo:load', setupSessionModal);
 
-document.addEventListener('DOMContentLoaded', function() {
-  function pad(num) { return num.toString().padStart(2, '0'); }
-  function formatDateTime(dtStr) {
-    if (!dtStr) return '--';
-    const d = new Date(dtStr.replace(/-/g, '/').replace(/ /, 'T'));
-    if (isNaN(d)) return '--';
-    return `${d.getFullYear()}年${pad(d.getMonth()+1)}月${pad(d.getDate())}日 ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
-  function calcDuration(start, end) {
-    if (!start || !end) return '--';
-    const s = new Date(start.replace(/-/g, '/').replace(/ /, 'T'));
-    const e = new Date(end.replace(/-/g, '/').replace(/ /, 'T'));
-    if (isNaN(s) || isNaN(e)) return '--';
-    let sec = Math.floor((e - s) / 1000);
-    if (sec < 0) return '--';
-    const h = Math.floor(sec / 3600);
-    const m = Math.floor((sec % 3600) / 60);
-    return `${h}時間${m}分`;
-  }
+function setupEditSessionModal() {
+  // 編集ボタンのイベントバインド
   document.querySelectorAll('.edit-session-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      // 値取得
+    btn.onclick = function() {
       const startedAt = btn.getAttribute('data-session-started-at');
       const endedAt = btn.getAttribute('data-session-ended-at');
       const categoryId = btn.getAttribute('data-session-category-id');
       const notes = btn.getAttribute('data-session-notes');
       const sessionId = btn.getAttribute('data-session-id');
-      // フォームセット
       if (startedAt) {
         const [date, time] = startedAt.split(' ');
         document.getElementById('edit-session-date').value = date;
@@ -329,23 +310,31 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       document.getElementById('edit-session-category').value = categoryId || '';
       document.getElementById('edit-session-notes').value = notes || '';
-      // formのactionを必ずセット
       document.getElementById('edit-session-form').action = `/study_sessions/${sessionId}`;
-      // CSRFトークンをhiddenにセット
       document.getElementById('edit-session-csrf-token').value = getCSRFToken();
-      // モーダル表示
       document.getElementById('edit-session-modal').classList.remove('hidden');
-    });
+    };
   });
-  // キャンセルボタンでモーダルを閉じる
-  document.getElementById('edit-session-cancel-btn').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.getElementById('edit-session-modal').classList.add('hidden');
-  });
-});
-document.addEventListener('turbo:load', function() {
-  // ...同様の処理をturbo:loadでも...
-});
+  // キャンセルボタン
+  const cancelBtn = document.getElementById('edit-session-cancel-btn');
+  if (cancelBtn) {
+    cancelBtn.onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('edit-session-modal').classList.add('hidden');
+    };
+  }
+  // モーダル外クリックで閉じる
+  const modalBg = document.getElementById('edit-session-modal');
+  if (modalBg) {
+    modalBg.onclick = function(e) {
+      if (e.target === modalBg) {
+        modalBg.classList.add('hidden');
+      }
+    };
+  }
+}
+document.addEventListener('DOMContentLoaded', setupEditSessionModal);
+document.addEventListener('turbo:load', setupEditSessionModal);
 
 function getCSRFToken() {
   const meta = document.querySelector('meta[name="csrf-token"]');
