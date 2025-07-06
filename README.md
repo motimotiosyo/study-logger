@@ -1,24 +1,60 @@
-# README
+# 学習logger
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+**このアプリは簡単なボタン操作で純粋な学習時間を計測し、カテゴリ別の集計や目標達成度を可視化することで成長を実感できるアプリです。**
 
-Things you may want to cover:
+## なぜ作ったのか？
 
-* Ruby version
+RUNTEQで学習を進める中で、学習時間管理に課題を感じていました
 
-* System dependencies
+- 離席や休憩時間も計測されてしまい、**純粋な学習時間が分からない**
+- チェックイン・チェックアウトの操作忘れで正確な計測ができない
+- 後から修正できず、モチベーション低下につながる
+- 何をどれくらい学習したか把握しづらい
 
-* Configuration
+「学習に専念したいのに、時間管理でストレスを感じるのはおかしい」
 
-* Database creation
+そんな思いから、プログラミング学習に特化したシンプルな時間管理アプリを作りました。
 
-* Database initialization
+## 特徴
 
-* How to run the test suite
+### 正確な学習時間の計測
+- **一時停止・再開機能**で純粋な学習時間のみを記録
+- 操作ミスや計測漏れも後から編集可能
+- 離席時間を除いた本当の学習時間が分かる
 
-* Services (job queues, cache servers, search engines, etc.)
+### 成長の可視化
+- **カテゴリ別集計**で何をどれだけ学習したか一目で把握
+- **目標達成率**をパーセンテージで表示
+- 累計・今週・今月の学習時間をダッシュボードで確認
 
-* Deployment instructions
+### シンプルな操作
+- 直感的なボタン操作（開始・一時停止・終了）
+- 学習に集中できるミニマルなデザイン
+- 操作に迷わない設計
 
-* ...
+## 想定ユーザー
+
+- **RUNTEQ受講生・卒業生**
+- プログラミング学習の進捗を可視化したい方
+- 転職活動で学習実績をアピールしたい方
+
+## 技術スタック
+
+- **Backend:** Ruby 3.3.6, Rails 7.2, PostgreSQL
+- **Frontend:** Tailwind CSS 4.1.11, JavaScript (Stimulus)
+- **Infrastructure:** Render, SendGrid
+- **Auth:** Devise（メール認証）
+
+## 今後の展望
+
+学習時間の管理から、**学習成果の可視化・共有**へ発展させる予定です
+
+### 短期目標
+- **SNS共有機能**: その日の学習成果をワンクリックで投稿
+- **PWA化**: オフライン対応・プッシュ通知
+
+### 長期目標
+- **学習経歴書出力**: 転職活動での学習実績アピール資料として活用
+- **詳細分析機能**: 学習パターンの分析・改善提案
+
+「何をどれだけ頑張ったか」を目に見える形にすることで、転職活動での差別化を支援します。
