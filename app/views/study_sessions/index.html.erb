@@ -1,8 +1,16 @@
 <div class="min-h-screen bg-gray-50">
-  <div class="container mx-auto px-4 py-8">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">学習履歴</h1>
-      <p class="text-gray-600">これまでの学習履歴を確認できます。</p>
+  <div class="container mx-auto px-4 py-8" data-controller="modal">
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">学習履歴</h1>
+        <p class="text-gray-600">これまでの学習履歴を確認できます。</p>
+      </div>
+      <button data-action="click->modal#open" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors create-session-btn">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        新しい学習セッション
+      </button>
     </div>
 
     <!-- 統計サマリー -->
@@ -112,8 +120,19 @@
                 </div>
                 
                 <div class="flex items-center space-x-2">
-                  <%= link_to '編集', edit_study_session_path(session), 
-                      class: 'inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' %>
+                  <button type="button"
+                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 edit-session-btn"
+                    data-session-id="<%= session.id %>"
+                    data-session-started-at="<%= session.started_at&.strftime('%Y-%m-%d %H:%M') %>"
+                    data-session-ended-at="<%= session.ended_at&.strftime('%Y-%m-%d %H:%M') %>"
+                    data-session-category-id="<%= session.category_id %>"
+                    data-session-notes="<%= h(session.notes.to_s) %>">
+                    編集
+                  </button>
+                  <%= button_to '削除', study_session_path(session), 
+                      method: :delete,
+                      class: 'inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500',
+                      data: { confirm: "⚠️ 注意\n\nこの学習セッションを削除しますか？\n\n・削除されたデータは完全に消去されます\n・この操作は元に戻すことができません\n\n本当に削除しますか？", turbo: false } %>
                 </div>
               </div>
             </div>
@@ -133,3 +152,192 @@
     </div>
   </div>
 </div>
+
+<!-- 学習セッション作成モーダル（カテゴリ管理ページと同じ構造） -->
+<div data-modal-target="modal" 
+     class="hidden fixed inset-0 bg-transparent overflow-y-auto h-full w-full z-50"
+     data-action="click->modal#closeOnBackdrop">
+  <div class="relative top-20 mx-auto p-5 border border-gray-200 w-[500px] shadow-2xl rounded-lg bg-white">
+    <div class="mt-3">
+      <h3 id="modal-title" class="text-lg font-medium text-gray-900 text-center mb-4">新しい学習セッション</h3>
+      <%= form_with url: study_sessions_path, scope: :session, local: true, id: "session-form", class: "space-y-4", data: { turbo: false } do |form| %>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <%= form.label :date, "開始日付", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.date_field :date, value: Date.today, required: true, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+          </div>
+          <div>
+            <%= form.label :start_time, "開始時刻", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.time_field :start_time, required: true, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+          </div>
+          <div>
+            <%= form.label :end_date, "終了日付", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.date_field :end_date, value: Date.today, required: true, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+          </div>
+          <div>
+            <%= form.label :end_time, "終了時刻", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.time_field :end_time, required: true, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+          </div>
+        </div>
+        <div>
+          <%= form.label :category_id, "学習カテゴリ", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :category_id, options_from_collection_for_select(@categories, :id, :name), { include_blank: "カテゴリを選択してください" }, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+        </div>
+        <div class="flex items-center justify-between pt-4">
+          <button type="button" 
+                  data-action="click->modal#close"
+                  class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            キャンセル
+          </button>
+          <%= form.submit "作成", id: "submit-btn",
+              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- 学習セッション編集モーダル -->
+<div id="edit-session-modal" class="hidden fixed inset-0 bg-transparent overflow-y-auto h-full w-full z-50" data-action="click->modal#closeOnBackdrop">
+  <div class="relative top-10 mx-auto p-8 border border-gray-200 w-[700px] shadow-2xl rounded-lg bg-white">
+    <h3 class="text-xl font-bold text-gray-900 text-center mb-6">学習セッション編集</h3>
+    <%= form_with url: '#', method: :patch, local: true, id: 'edit-session-form', scope: :session, data: { turbo: false } do |form| %>
+      <input type="hidden" name="authenticity_token" id="edit-session-csrf-token" value="">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <%= form.label :date, "開始日付", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.date_field :date, required: true, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", id: 'edit-session-date' %>
+        </div>
+        <div>
+          <%= form.label :start_time, "開始時刻", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.time_field :start_time, required: true, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", id: 'edit-session-start-time' %>
+        </div>
+        <div>
+          <%= form.label :end_date, "終了日付", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.date_field :end_date, required: true, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", id: 'edit-session-end-date' %>
+        </div>
+        <div>
+          <%= form.label :end_time, "終了時刻", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.time_field :end_time, required: true, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", id: 'edit-session-end-time' %>
+        </div>
+      </div>
+      <div>
+        <%= form.label :category_id, "学習カテゴリ", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :category_id, options_from_collection_for_select(@categories, :id, :name), { include_blank: "カテゴリを選択してください" }, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", id: 'edit-session-category' %>
+      </div>
+      <div>
+        <%= form.label :notes, "学習内容・振り返り", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_area :notes, rows: 4, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", id: 'edit-session-notes', placeholder: '今日学習した内容、気づいたこと、次回の目標などを記録しましょう…' %>
+        <div class="text-xs text-gray-500 mt-1">学習内容や振り返りを記録することで、より効果的な学習につながります。</div>
+      </div>
+      <div class="flex items-center justify-between pt-4">
+        <button type="button" id="edit-session-cancel-btn" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">キャンセル</button>
+        <%= form.submit "更新する", id: "edit-session-submit-btn", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+function setupSessionModal() {
+  const form = document.getElementById('session-form');
+  const modalTitle = document.getElementById('modal-title');
+  const submitBtn = document.getElementById('submit-btn');
+  document.querySelectorAll('.create-session-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+      setTimeout(() => {
+        modalTitle.textContent = '新しい学習セッション';
+        form.action = '/study_sessions';
+        const methodInput = form.querySelector('input[name="_method"]');
+        if (methodInput) {
+          methodInput.remove();
+        }
+        submitBtn.textContent = '作成';
+        submitBtn.value = '作成';
+        const modal = document.querySelector('[data-modal-target="modal"]');
+        modal.classList.remove('hidden');
+      }, 10);
+    });
+  });
+  function closeModal() {
+    const modal = document.querySelector('[data-modal-target="modal"]');
+    modal.classList.add('hidden');
+  }
+  document.querySelector('[data-action="click->modal#close"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    closeModal();
+  });
+  document.querySelector('[data-action="click->modal#closeOnBackdrop"]').addEventListener('click', function(e) {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const modal = document.querySelector('[data-modal-target="modal"]');
+      if (!modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    }
+  });
+  form.addEventListener('submit', function(e) {
+    setTimeout(() => {
+      closeModal();
+    }, 100);
+  });
+}
+document.addEventListener('DOMContentLoaded', setupSessionModal);
+document.addEventListener('turbo:load', setupSessionModal);
+
+function setupEditSessionModal() {
+  // 編集ボタンのイベントバインド
+  document.querySelectorAll('.edit-session-btn').forEach(btn => {
+    btn.onclick = function() {
+      const startedAt = btn.getAttribute('data-session-started-at');
+      const endedAt = btn.getAttribute('data-session-ended-at');
+      const categoryId = btn.getAttribute('data-session-category-id');
+      const notes = btn.getAttribute('data-session-notes');
+      const sessionId = btn.getAttribute('data-session-id');
+      if (startedAt) {
+        const [date, time] = startedAt.split(' ');
+        document.getElementById('edit-session-date').value = date;
+        document.getElementById('edit-session-start-time').value = time;
+      }
+      if (endedAt) {
+        const [date, time] = endedAt.split(' ');
+        document.getElementById('edit-session-end-date').value = date;
+        document.getElementById('edit-session-end-time').value = time;
+      }
+      document.getElementById('edit-session-category').value = categoryId || '';
+      document.getElementById('edit-session-notes').value = notes || '';
+      document.getElementById('edit-session-form').action = `/study_sessions/${sessionId}`;
+      document.getElementById('edit-session-csrf-token').value = getCSRFToken();
+      document.getElementById('edit-session-modal').classList.remove('hidden');
+    };
+  });
+  // キャンセルボタン
+  const cancelBtn = document.getElementById('edit-session-cancel-btn');
+  if (cancelBtn) {
+    cancelBtn.onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('edit-session-modal').classList.add('hidden');
+    };
+  }
+  // モーダル外クリックで閉じる
+  const modalBg = document.getElementById('edit-session-modal');
+  if (modalBg) {
+    modalBg.onclick = function(e) {
+      if (e.target === modalBg) {
+        modalBg.classList.add('hidden');
+      }
+    };
+  }
+}
+document.addEventListener('DOMContentLoaded', setupEditSessionModal);
+document.addEventListener('turbo:load', setupEditSessionModal);
+
+function getCSRFToken() {
+  const meta = document.querySelector('meta[name="csrf-token"]');
+  return meta ? meta.content : '';
+}
+</script>

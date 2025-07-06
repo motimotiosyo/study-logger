@@ -4,6 +4,7 @@ class StudySessionsController < ApplicationController
 
   def index
     @sessions = current_user.sessions.includes(:category).order(started_at: :desc)
+    @categories = current_user.categories.order(:name)
   end
 
   def new
@@ -23,12 +24,28 @@ class StudySessionsController < ApplicationController
       return
     end
 
+    # 日付・時刻をパラメータから取得
+    date = params[:session][:date]
+    start_time = params[:session][:start_time]
+    end_date = params[:session][:end_date]
+    end_time = params[:session][:end_time]
+
+    started_at = nil
+    ended_at = nil
+    if date.present? && start_time.present?
+      started_at = Time.zone.parse("#{date} #{start_time}")
+    end
+    if end_date.present? && end_time.present?
+      ended_at = Time.zone.parse("#{end_date} #{end_time}")
+    end
+
     @session = current_user.sessions.build(session_params)
     @session.paused_seconds = 0
-    @session.started_at = Time.current  # この行を追加
+    @session.started_at = started_at
+    @session.ended_at = ended_at
 
     if @session.save
-      redirect_to dashboard_path, notice: "学習セッションを開始しました"
+      redirect_to study_sessions_path, notice: "学習セッションを記録しました"
     else
       render :new, status: :unprocessable_entity
     end
@@ -97,6 +114,6 @@ class StudySessionsController < ApplicationController
   end
 
   def session_params
-    params.require(:session).permit(:started_at, :ended_at, :notes, :category_id)
+    params.require(:session).permit(:notes, :category_id)
   end
 end
