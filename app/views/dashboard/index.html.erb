@@ -65,8 +65,11 @@
     <% else %>
       <div class="text-center py-8">
         <p class="text-gray-500 mb-4">現在、学習は開始されていません。</p>
-        <%= link_to "学習を開始する", new_study_session_path, 
-            class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium text-lg transition-colors" %>
+        <button type="button"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium text-lg transition-colors"
+          onclick="openSessionModal()">
+          学習を開始する
+        </button>
       </div>
     <% end %>
   </div>
@@ -371,4 +374,48 @@
       </div>
     </div>
   </div>
+
+<!-- 学習セッション作成モーダル（専用idに変更） -->
+<div id="session-modal" class="hidden fixed inset-0 bg-transparent overflow-y-auto h-full w-full z-50">
+  <div class="relative top-20 mx-auto p-5 border border-gray-200 w-[500px] shadow-2xl rounded-lg bg-white">
+    <div class="mt-3">
+      <h3 class="text-lg font-medium text-gray-900 text-center mb-4">新しい学習セッション</h3>
+      <%= form_with url: study_sessions_path, scope: :session, local: true, id: "session-form", class: "space-y-4", data: { turbo: false } do |form| %>
+        <div>
+          <%= form.label :category_id, "学習カテゴリ", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :category_id, options_from_collection_for_select(@categories || [], :id, :name), { include_blank: "カテゴリを選択してください" }, class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+        </div>
+        <div class="flex items-center justify-between pt-4">
+          <button type="button" onclick="closeSessionModal()"
+                  class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            キャンセル
+          </button>
+          <%= form.submit "開始", id: "submit-btn",
+              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script>
+function openSessionModal() {
+  document.getElementById('session-modal').classList.remove('hidden');
+}
+function closeSessionModal() {
+  document.getElementById('session-modal').classList.add('hidden');
+}
+// モーダル外クリックで閉じる
+window.addEventListener('click', function(e) {
+  const modal = document.getElementById('session-modal');
+  if (modal && !modal.classList.contains('hidden') && e.target === modal) {
+    closeSessionModal();
+  }
+});
+// ESCキーで閉じる
+window.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeSessionModal();
+  }
+});
+</script>
 </div>

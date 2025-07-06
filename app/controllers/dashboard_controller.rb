@@ -6,6 +6,9 @@ class DashboardController < ApplicationController
     # 残りのコードはそのまま
     @recent_sessions = current_user.sessions.includes(:category).order(started_at: :desc).limit(5)
 
+    # カテゴリ一覧（学習セッション作成モーダル用）
+    @categories = current_user.categories.order(:name)
+
     # 期間別学習時間
     @today_seconds = current_user.study_time_for_period(:today)
     @week_seconds = current_user.study_time_for_period(:this_week)

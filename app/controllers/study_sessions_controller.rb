@@ -24,30 +24,14 @@ class StudySessionsController < ApplicationController
       return
     end
 
-    # 日付・時刻をパラメータから取得
-    date = params[:session][:date]
-    start_time = params[:session][:start_time]
-    end_date = params[:session][:end_date]
-    end_time = params[:session][:end_time]
-
-    started_at = nil
-    ended_at = nil
-    if date.present? && start_time.present?
-      started_at = Time.zone.parse("#{date} #{start_time}")
-    end
-    if end_date.present? && end_time.present?
-      ended_at = Time.zone.parse("#{end_date} #{end_time}")
-    end
-
     @session = current_user.sessions.build(session_params)
     @session.paused_seconds = 0
-    @session.started_at = started_at
-    @session.ended_at = ended_at
+    @session.started_at = Time.current  # 現在時刻で開始
 
     if @session.save
-      redirect_to study_sessions_path, notice: "学習セッションを記録しました"
+      redirect_to dashboard_path, notice: "学習セッションを開始しました"
     else
-      render :new, status: :unprocessable_entity
+      redirect_to dashboard_path, alert: "学習セッションの開始に失敗しました"
     end
   end
 
