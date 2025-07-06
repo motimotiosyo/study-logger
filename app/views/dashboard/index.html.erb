@@ -137,21 +137,7 @@
       <p class="text-sm text-gray-500 mt-1">学習時間の多い上位6カテゴリを表示</p>
     </div>
     <div class="flex space-x-2">
-      <%= link_to categories_path, 
-          class: "inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors" do %>
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-        </svg>
-        すべて見る
-      <% end %>
-      <%= link_to categories_path, 
-          class: "inline-flex items-center px-3 py-1.5 border border-indigo-300 text-sm font-medium rounded-md text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors" do %>
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-        </svg>
-        管理
-      <% end %>
+      <%= link_to "すべて見る", categories_path, class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
     </div>
   </div>
   
@@ -297,7 +283,10 @@
 <!-- 最近のセッション -->
 <div class="bg-white shadow rounded-lg p-6">
   <div class="flex items-center justify-between mb-4">
-    <h2 class="text-xl font-semibold text-gray-900">最近のセッション</h2>
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900">最近の学習セッション</h2>
+      <p class="text-sm text-gray-500 mt-1">直近5件の学習セッションを表示</p>
+    </div>
     <%= link_to "すべて見る", study_sessions_path, class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
   </div>
   

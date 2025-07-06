@@ -21,7 +21,7 @@
   <body class="bg-gray-50 min-h-screen">
     <% if user_signed_in? %>
       <!-- ナビゲーションヘッダー -->
-      <nav class="bg-blue-600 text-white shadow-lg">
+      <nav class="bg-blue-600 text-white shadow-lg fixed top-0 w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between h-16">
             <!-- ロゴ・タイトル -->
@@ -33,18 +33,19 @@
             </div>
             
             <!-- ナビゲーションメニュー -->
-            <div class="hidden md:block">
-              <div class="ml-10 flex items-baseline space-x-4">
+            <div class="hidden md:block ml-auto">
+              <div class="flex items-baseline space-x-4">
                 <%= link_to "ダッシュボード", dashboard_path, 
                     class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-500 transition-colors #{'bg-blue-700' if current_page?(dashboard_path)}" %>
                 <%= link_to "学習履歴", study_sessions_path, 
                     class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-500 transition-colors #{'bg-blue-700' if current_page?(study_sessions_path)}" %>
+                <%= link_to "カテゴリ管理", categories_path, 
+                    class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-500 transition-colors #{'bg-blue-700' if current_page?(categories_path)}" %>
               </div>
             </div>
             
             <!-- ユーザーメニュー -->
-            <div class="flex items-center space-x-4">
-              <span class="text-sm">こんにちは、<%= current_user.display_name %>さん</span>
+            <div class="flex items-center space-x-4 ml-4">
               <%= button_to "ログアウト", destroy_user_session_path, 
                   method: :delete,
                   class: "bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white border-0 cursor-pointer",
@@ -59,6 +60,8 @@
                   class: "block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-500 transition-colors #{'bg-blue-700' if current_page?(dashboard_path)}" %>
               <%= link_to "学習履歴", study_sessions_path, 
                   class: "block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-500 transition-colors #{'bg-blue-700' if current_page?(study_sessions_path)}" %>
+              <%= link_to "カテゴリ管理", categories_path, 
+                  class: "block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-500 transition-colors #{'bg-blue-700' if current_page?(categories_path)}" %>
             </div>
           </div>
         </div>
@@ -79,7 +82,7 @@
     <% end %>
 
     <!-- メインコンテンツ -->
-    <main class="<%= 'py-8' if user_signed_in? %>">
+    <main class="<%= 'pt-20 pb-8' if user_signed_in? %>">
       <%= yield %>
     </main>
   </body>
