@@ -12,7 +12,7 @@
           <%= link_to "ダッシュボードに戻る", dashboard_path, 
               class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors" %>
           <button data-action="click->modal#open" 
-              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors create-category-btn">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
@@ -21,6 +21,19 @@
         </div>
       </div>
     </div>
+
+    <!-- フラッシュメッセージ（既存のレイアウトから移動） -->
+    <% if notice %>
+      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
+        <span class="block sm:inline"><%= notice %></span>
+      </div>
+    <% end %>
+    
+    <% if alert %>
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
+        <span class="block sm:inline"><%= alert %></span>
+      </div>
+    <% end %>
 
     <!-- 統計サマリー -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -108,13 +121,24 @@
                 
                 <!-- アクション -->
                 <div class="flex items-center space-x-2">
-                  <button onclick="openEditModal('<%= category.id %>', '<%= j category.name %>', '<%= category.color %>')"
-                          class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                    編集
-                  </button>
+                  <% if category.custom_category? %>
+                    <!-- カスタムカテゴリ：編集可能 -->
+                    <button onclick="openEditModal('<%= category.id %>', '<%= j category.name %>', '<%= category.color %>')"
+                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors category-edit-btn">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
+                      編集
+                    </button>
+                  <% else %>
+                    <!-- デフォルトカテゴリ：編集不可 -->
+                    <span class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                      <svg class="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                      </svg>
+                      編集不可
+                    </span>
+                  <% end %>
                   
                   <% if category.deletable? %>
                     <%= button_to "削除", category_path(category), 
@@ -127,6 +151,9 @@
                         class: "inline-flex items-center px-3 py-1.5 border border-red-300 text-xs font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors cursor-pointer" %>
                   <% else %>
                     <span class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                      <svg class="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                      </svg>
                       削除不可
                     </span>
                   <% end %>
@@ -143,7 +170,7 @@
           <h3 class="text-lg font-medium text-gray-900 mb-2">カテゴリがありません</h3>
           <p class="text-gray-500 mb-6">最初のカテゴリを作成してみましょう。</p>
           <button data-action="click->modal#open" 
-                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 create-category-btn">
             新しいカテゴリを作成
           </button>
         </div>
@@ -154,14 +181,14 @@
     <div class="mt-8 p-4 bg-blue-50 rounded-lg">
       <h3 class="text-sm font-medium text-blue-900 mb-2">💡 カテゴリ管理のヒント</h3>
       <ul class="text-sm text-blue-800 space-y-1">
-        <li>• デフォルトカテゴリは名前と色を変更できますが、削除はできません</li>
-        <li>• カスタムカテゴリは自由に編集・削除できます</li>
+        <li>• <strong>デフォルトカテゴリ</strong>：編集・削除はできません（学習データの整合性保護）</li>
+        <li>• <strong>カスタムカテゴリ</strong>：自由に編集・削除できます</li>
         <li>• カテゴリを削除すると、紐づく学習セッションは「未分類」になります</li>
         <li>• カテゴリは最大50個まで作成できます</li>
       </ul>
     </div>
 
-    <!-- カテゴリ作成・編集モーダル（ダッシュボードのモーダルと同じ構造） -->
+    <!-- カテゴリ作成・編集モーダル -->
     <div data-modal-target="modal" 
          class="hidden fixed inset-0 bg-transparent overflow-y-auto h-full w-full z-50"
          data-action="click->modal#closeOnBackdrop">
@@ -169,13 +196,15 @@
         <div class="mt-3">
           <h3 id="modal-title" class="text-lg font-medium text-gray-900 text-center mb-4">新しいカテゴリ</h3>
           
-          <%= form_with model: Category.new, url: categories_path, local: true, id: "category-form", class: "space-y-4" do |form| %>
+          <%= form_with model: Category.new, url: categories_path, local: true, id: "category-form", class: "space-y-4", data: { turbo: false } do |form| %>
             <div>
               <%= form.label :name, "カテゴリ名", class: "block text-sm font-medium text-gray-700 mb-2" %>
               <%= form.text_field :name, 
                   id: "category_name",
                   placeholder: "例：JavaScript学習",
+                  required: true,
                   class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+              <p class="mt-1 text-xs text-gray-500">カテゴリ名は必須です（1〜50文字）</p>
             </div>
             
             <div>
@@ -185,13 +214,15 @@
                   <label class="cursor-pointer">
                     <%= form.radio_button :color, color, 
                         id: "color_#{index}",
-                        class: "sr-only color-radio" %>
+                        class: "sr-only color-radio",
+                        required: true %>
                     <div class="w-12 h-12 rounded-full border-2 border-gray-300 hover:border-indigo-500 transition-colors color-option"
                          style="background-color: <%= color %>"
                          data-color="<%= color %>"></div>
                   </label>
                 <% end %>
               </div>
+              <p class="mt-2 text-xs text-gray-500">色を選択してください</p>
             </div>
             
             <div class="flex items-center justify-between pt-4">
@@ -218,6 +249,27 @@ document.addEventListener('DOMContentLoaded', function() {
   const submitBtn = document.getElementById('submit-btn');
   const colorOptions = document.querySelectorAll('.color-option');
   const colorRadios = document.querySelectorAll('.color-radio');
+  
+  // 新規作成モード用のフォームリセット関数
+  function resetFormForCreate() {
+    modalTitle.textContent = '新しいカテゴリ';
+    form.action = '/categories';
+    
+    // PATCHメソッドを削除
+    const methodInput = form.querySelector('input[name="_method"]');
+    if (methodInput) {
+      methodInput.remove();
+    }
+    
+    categoryNameInput.value = '';
+    submitBtn.textContent = '作成';
+    submitBtn.value = '作成';
+    
+    // デフォルトカラー選択
+    if (colorOptions.length > 0) {
+      colorOptions[0].click();
+    }
+  }
   
   // カラー選択の処理
   colorOptions.forEach(option => {
@@ -272,34 +324,60 @@ document.addEventListener('DOMContentLoaded', function() {
       colorOption.click();
     }
     
-    // モーダルを表示
+    // モーダルを直接表示（Stimulusを経由しない）
     const modal = document.querySelector('[data-modal-target="modal"]');
     modal.classList.remove('hidden');
+    
+    // フォーカスを設定
+    setTimeout(() => {
+      categoryNameInput.focus();
+    }, 100);
   };
   
-  // 新規作成時にフォームをリセット（モーダル表示前に実行）
-  document.addEventListener('click', function(e) {
-    if (e.target.matches('[data-action*="modal#open"]') || e.target.closest('[data-action*="modal#open"]')) {
-      // 新規作成モードの初期化（編集ボタン以外の場合のみ）
+  // 新規作成ボタン専用のイベントリスナー
+  document.querySelectorAll('.create-category-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
       setTimeout(() => {
-        modalTitle.textContent = '新しいカテゴリ';
-        form.action = '/categories';
-        
-        // PATCHメソッドを削除
-        const methodInput = form.querySelector('input[name="_method"]');
-        if (methodInput) {
-          methodInput.remove();
-        }
-        
-        categoryNameInput.value = '';
-        submitBtn.textContent = '作成';
-        
-        // デフォルトカラー選択
-        if (colorOptions.length > 0) {
-          colorOptions[0].click();
-        }
-      }, 10); // 短い遅延でモーダル表示後に実行
+        resetFormForCreate();
+      }, 10);
+    });
+  });
+  
+  // モーダルクローズ機能
+  function closeModal() {
+    const modal = document.querySelector('[data-modal-target="modal"]');
+    modal.classList.add('hidden');
+  }
+  
+  // キャンセルボタンのクリックイベント
+  document.querySelector('[data-action="click->modal#close"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    closeModal();
+  });
+  
+  // 背景クリックでクローズ
+  document.querySelector('[data-action="click->modal#closeOnBackdrop"]').addEventListener('click', function(e) {
+    if (e.target === e.currentTarget) {
+      closeModal();
     }
+  });
+  
+  // ESCキーでクローズ
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const modal = document.querySelector('[data-modal-target="modal"]');
+      if (!modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    }
+  });
+  
+  // フォーム送信後の処理を追加
+  form.addEventListener('submit', function(e) {
+    // フォーム送信後、モーダルを閉じてページリロードを確実にする
+    setTimeout(() => {
+      closeModal();
+    }, 100);
   });
 });
 </script>
