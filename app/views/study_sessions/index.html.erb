@@ -161,6 +161,7 @@
     <div class="mt-3">
       <h3 id="modal-title" class="text-lg font-medium text-gray-900 text-center mb-4">新しい学習セッション</h3>
       <%= form_with url: study_sessions_path, scope: :session, local: true, id: "session-form", class: "space-y-4", data: { turbo: false } do |form| %>
+        <%= hidden_field_tag :mode, 'record' %>
         <div class="grid grid-cols-2 gap-4">
           <div>
             <%= form.label :date, "開始日付", class: "block text-sm font-medium text-gray-700 mb-2" %>

@@ -298,6 +298,16 @@ function setupCategoryModalEvents() {
     }
     methodInput.value = 'patch';
     
+    // CSRFトークンを確実に設定
+    let csrfInput = form.querySelector('input[name="authenticity_token"]');
+    if (!csrfInput) {
+      csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = 'authenticity_token';
+      form.appendChild(csrfInput);
+    }
+    csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
     categoryNameInput.value = name;
     
     // ボタンテキストを更新
