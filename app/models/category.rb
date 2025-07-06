@@ -32,6 +32,11 @@ class Category < ApplicationRecord
     sessions.where(started_at: 1.week.ago..Time.current).sum(&:actual_seconds)
   end
 
+  # このカテゴリでの今月の学習時間（秒）
+  def this_month_seconds
+    sessions.where(started_at: Time.current.beginning_of_month..Time.current.end_of_month).sum(&:actual_seconds)
+  end
+
   # 🆕 デフォルトカテゴリかどうか判定
   def default_category?
     is_default == true

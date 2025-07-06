@@ -9,8 +9,6 @@
           <p class="text-gray-600">学習カテゴリを自由に作成・編集できます</p>
         </div>
         <div class="flex space-x-3">
-          <%= link_to "ダッシュボードに戻る", dashboard_path, 
-              class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors" %>
           <button data-action="click->modal#open" 
               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors create-category-btn">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -21,19 +19,6 @@
         </div>
       </div>
     </div>
-
-    <!-- フラッシュメッセージ（既存のレイアウトから移動） -->
-    <% if notice %>
-      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
-        <span class="block sm:inline"><%= notice %></span>
-      </div>
-    <% end %>
-    
-    <% if alert %>
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
-        <span class="block sm:inline"><%= alert %></span>
-      </div>
-    <% end %>
 
     <!-- 統計サマリー -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -115,6 +100,7 @@
                       <span>学習時間: <%= sprintf("%.1f", category.total_study_hours) %>時間</span>
                       <span>セッション数: <%= category.sessions_count %>回</span>
                       <span>今週: <%= sprintf("%.1f", category.this_week_seconds / 3600.0) %>時間</span>
+                      <span>今月: <%= sprintf("%.1f", category.this_month_seconds / 3600.0) %>時間</span>
                     </div>
                   </div>
                 </div>
@@ -242,7 +228,7 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function setupCategoryModalEvents() {
   const form = document.getElementById('category-form');
   const modalTitle = document.getElementById('modal-title');
   const categoryNameInput = document.getElementById('category_name');
@@ -336,11 +322,11 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 新規作成ボタン専用のイベントリスナー
   document.querySelectorAll('.create-category-btn').forEach(button => {
-    button.addEventListener('click', function(e) {
+    button.onclick = function(e) {
       setTimeout(() => {
         resetFormForCreate();
       }, 10);
-    });
+    };
   });
   
   // モーダルクローズ機能
@@ -379,5 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
       closeModal();
     }, 100);
   });
-});
+}
+document.addEventListener('DOMContentLoaded', setupCategoryModalEvents);
+document.addEventListener('turbo:load', setupCategoryModalEvents);
 </script>
