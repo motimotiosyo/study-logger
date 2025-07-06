@@ -31,4 +31,24 @@ class Category < ApplicationRecord
   def this_week_seconds
     sessions.where(started_at: 1.week.ago..Time.current).sum(&:actual_seconds)
   end
+
+  # 🆕 デフォルトカテゴリかどうか判定
+  def default_category?
+    is_default == true
+  end
+
+  # 🆕 カスタムカテゴリかどうか判定
+  def custom_category?
+    !default_category?
+  end
+
+  # 🆕 削除可能かどうか判定
+  def deletable?
+    custom_category?
+  end
+
+  # 🆕 セッション数を取得
+  def sessions_count
+    sessions.count
+  end
 end

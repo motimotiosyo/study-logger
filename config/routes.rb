@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # 🆕 カテゴリ管理機能
+  resources :categories, except: [:show]
+
   # ユーザープロフィール
   resource :profile, only: [ :show, :edit, :update ]
 
