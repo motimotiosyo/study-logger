@@ -1,6 +1,6 @@
 class CategoriesController < ApplicationController
-  before_action :set_category, only: [:edit, :update, :destroy]
-  before_action :check_ownership, only: [:edit, :update, :destroy]
+  before_action :set_category, only: [ :edit, :update, :destroy ]
+  before_action :check_ownership, only: [ :edit, :update, :destroy ]
 
   def index
     @categories = current_user.categories.order(created_at: :asc)
@@ -14,12 +14,12 @@ class CategoriesController < ApplicationController
 
   def create
     @category = current_user.categories.build(category_params)
-    
+
     if @category.save
       redirect_to categories_path, notice: "カテゴリ「#{@category.name}」を作成しました"
     else
       # バリデーションエラー時はリダイレクトしてフラッシュメッセージで表示
-      error_messages = @category.errors.full_messages.join('、')
+      error_messages = @category.errors.full_messages.join("、")
       redirect_to categories_path, alert: "カテゴリの作成に失敗しました: #{error_messages}"
     end
   end
@@ -34,12 +34,12 @@ class CategoriesController < ApplicationController
       redirect_to categories_path, alert: "デフォルトカテゴリは編集できません"
       return
     end
-    
+
     if @category.update(category_params)
       redirect_to categories_path, notice: "カテゴリ「#{@category.name}」を更新しました"
     else
       # バリデーションエラー時はリダイレクトしてフラッシュメッセージで表示
-      error_messages = @category.errors.full_messages.join('、')
+      error_messages = @category.errors.full_messages.join("、")
       redirect_to categories_path, alert: "カテゴリの更新に失敗しました: #{error_messages}"
     end
   end
@@ -50,7 +50,7 @@ class CategoriesController < ApplicationController
       redirect_to categories_path, alert: "デフォルトカテゴリは削除できません"
       return
     end
-    
+
     category_name = @category.name
     sessions_count = @category.sessions.count
 
@@ -58,7 +58,7 @@ class CategoriesController < ApplicationController
       # セッションがある場合は「未分類」に移動
       @category.sessions.update_all(category_id: nil)
       @category.destroy
-      redirect_to categories_path, 
+      redirect_to categories_path,
                  notice: "カテゴリ「#{category_name}」を削除しました。#{sessions_count}個のセッションは「未分類」に移動されました。"
     else
       # セッションがない場合は直接削除

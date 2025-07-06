@@ -19,7 +19,7 @@ class StudySessionsController < ApplicationController
 
   def create
     # 進行中のセッションがあるかチェック（開始モードの場合のみ）
-    if params[:mode] == 'start' && current_user.session_in_progress?
+    if params[:mode] == "start" && current_user.session_in_progress?
       redirect_to dashboard_path, alert: "既に進行中の学習セッションがあります"
       return
     end
@@ -29,12 +29,12 @@ class StudySessionsController < ApplicationController
 
     # モードに応じて処理を分岐
     case params[:mode]
-    when 'start'
+    when "start"
       # 開始モード：現在時刻で開始
       @session.started_at = Time.current
       success_message = "学習セッションを開始しました"
       redirect_path = dashboard_path
-    when 'record'
+    when "record"
       # 記録モード：入力された日時で記録
       date = params[:session][:date]
       start_time = params[:session][:start_time]

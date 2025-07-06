@@ -9,14 +9,14 @@ class AddIsDefaultToCategories < ActiveRecord::Migration[7.2]
         Category.reset_column_information
         default_category_names = [
           'カリキュラム学習',
-          'プログラミング', 
+          'プログラミング',
           'アプリ開発',
           '読書',
           '動画視聴',
           'イベント参加',
           'その他'
         ]
-        
+
         Category.where(name: default_category_names).update_all(is_default: true)
       end
     end
