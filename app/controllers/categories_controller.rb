@@ -18,8 +18,9 @@ class CategoriesController < ApplicationController
     if @category.save
       redirect_to categories_path, notice: "カテゴリ「#{@category.name}」を作成しました"
     else
-      @available_colors = Category::DEFAULT_COLORS
-      render :new, status: :unprocessable_entity
+      # バリデーションエラー時はリダイレクトしてフラッシュメッセージで表示
+      error_messages = @category.errors.full_messages.join('、')
+      redirect_to categories_path, alert: "カテゴリの作成に失敗しました: #{error_messages}"
     end
   end
 
@@ -28,15 +29,28 @@ class CategoriesController < ApplicationController
   end
 
   def update
+    # デフォルトカテゴリの編集を防止
+    if @category.default_category?
+      redirect_to categories_path, alert: "デフォルトカテゴリは編集できません"
+      return
+    end
+    
     if @category.update(category_params)
       redirect_to categories_path, notice: "カテゴリ「#{@category.name}」を更新しました"
     else
-      @available_colors = Category::DEFAULT_COLORS
-      render :edit, status: :unprocessable_entity
+      # バリデーションエラー時はリダイレクトしてフラッシュメッセージで表示
+      error_messages = @category.errors.full_messages.join('、')
+      redirect_to categories_path, alert: "カテゴリの更新に失敗しました: #{error_messages}"
     end
   end
 
   def destroy
+    # デフォルトカテゴリの削除を防止（二重チェック）
+    if @category.default_category?
+      redirect_to categories_path, alert: "デフォルトカテゴリは削除できません"
+      return
+    end
+    
     category_name = @category.name
     sessions_count = @category.sessions.count
 
